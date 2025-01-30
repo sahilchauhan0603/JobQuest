@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const socket = io("https://jobquest-backend-v4d2.onrender.com"); // Backend URL
+const socket = io("https://jobquest-backend-oaci.onrender.com"); // Backend URL
 
 const Chat = () => {
   const [message, setMessage] = useState("");

@@ -108,7 +108,7 @@ export const fetchJobs =
   async (dispatch) => {
     try {
       dispatch(jobSlice.actions.requestForAllJobs());
-      let link = "https://jobquest-backend-v4d2.onrender.com/api/v1/job/getall?";
+      let link = "https://jobquest-backend-oaci.onrender.com/api/v1/job/getall?";
       // let link = "http://localhost:4000/api/v1/job/getall?";
       let queryParams = [];
       if (searchKeyword) {
@@ -158,7 +158,7 @@ export const fetchSingleJob = (jobId) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForSingleJob());
   try {
     const response = await axios.get(
-      `https://jobquest-backend-v4d2.onrender.com/api/v1/job/get/${jobId}`,
+      `https://jobquest-backend-oaci.onrender.com/api/v1/job/get/${jobId}`,
       // `http://localhost:4000/api/v1/job/get/${jobId}`,
       { withCredentials: true }
     );
@@ -173,7 +173,7 @@ export const postJob = (data) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForPostJob());
   try {
     const response = await axios.post(
-      `https://jobquest-backend-v4d2.onrender.com/api/v1/job/post`,
+      `https://jobquest-backend-oaci.onrender.com/api/v1/job/post`,
       // `http://localhost:4000/api/v1/job/post`,
       data,
       { withCredentials: true, headers: { "Content-Type": "application/json" } }
@@ -189,7 +189,7 @@ export const getMyJobs = () => async (dispatch) => {
   dispatch(jobSlice.actions.requestForMyJobs());
   try {
     const response = await axios.get(
-      `https://jobquest-backend-v4d2.onrender.com/api/v1/job/getmyjobs`,
+      `https://jobquest-backend-oaci.onrender.com/api/v1/job/getmyjobs`,
       // `http://localhost:4000/api/v1/job/getmyjobs`,
       { withCredentials: true }
     );
@@ -204,7 +204,7 @@ export const deleteJob = (id) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForDeleteJob());
   try {
     const response = await axios.delete(
-      `https://jobquest-backend-v4d2.onrender.com/api/v1/job/delete/${id}`,
+      `https://jobquest-backend-oaci.onrender.com/api/v1/job/delete/${id}`,
       // `http://localhost:4000/api/v1/job/delete/${id}`,
       { withCredentials: true }
     );
