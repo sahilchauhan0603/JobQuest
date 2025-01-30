@@ -1,0 +1,14 @@
+/* customNProgress.css */
+#nprogress .bar {
+    background: #29d; /* Change bar color */
+    height: 4px; /* Change bar thickness */
+  }
+  
+  #nprogress .peg {
+    box-shadow: 0 0 10px #29d, 0 0 5px #29d; /* Glow effect */
+  }
+  
+  #nprogress .spinner-icon {
+    display: none; /* Hide spinner */
+  }
+  
