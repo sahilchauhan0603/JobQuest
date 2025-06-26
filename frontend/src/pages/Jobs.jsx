@@ -211,7 +211,7 @@ const Jobs = () => {
                 ) : (
                   <div style={{textAlign: 'center', marginTop: '2rem'}}>
                     <div style={{fontSize: '1.5rem', fontWeight: 600, color: '#ff9800', marginBottom: '1rem'}}>No jobs found</div>
-                    <img src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?auto=format&fit=crop&w=600&q=80" alt="No jobs found" className="notfound-img" />
+                    <img src="/NoJob.png" alt="No jobs found" className="notfound-img" />
                   </div>
                 )}
               </div>
