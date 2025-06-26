@@ -188,3 +188,8 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
   sendToken(user, 200, res, "Password updated successfully.");
 });
+
+export const getUserCount = catchAsyncErrors(async (req, res, next) => {
+  const count = await User.countDocuments();
+  res.status(200).json({ count });
+});

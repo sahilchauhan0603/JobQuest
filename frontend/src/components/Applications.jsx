@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
   clearAllApplicationErrors,
   deleteApplication,
-  fetchEmployerApplications,
+  fetchApplications,
   resetApplicationSlice,
 } from "../store/slices/applicationSlice";
 import Spinner from "./Spinner";
@@ -18,6 +18,10 @@ const Applications = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(fetchApplications());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (error) {
       toast.error(error);
       dispatch(clearAllApplicationErrors());
@@ -26,8 +30,7 @@ const Applications = () => {
       toast.success(message);
       dispatch(resetApplicationSlice());
     }
-    dispatch(fetchEmployerApplications());
-  }, [dispatch, error, message]);
+  }, [error, message, dispatch]);
 
   const handleDeleteApplication = (id) => {
     dispatch(deleteApplication(id));
@@ -51,23 +54,23 @@ const Applications = () => {
                       <span>Job Title: </span> {element.jobInfo.jobTitle}
                     </p>
                     <p className="sub-sec">
-                      <span>Applicant's Name: </span>{" "}
+                      <span>Applicant&apos;s Name: </span>{" "}
                       {element.jobSeekerInfo.name}
                     </p>
                     <p className="sub-sec">
-                      <span>Applicant's Email:</span>{" "}
+                      <span>Applicant&apos;s Email:</span>{" "}
                       {element.jobSeekerInfo.email}
                     </p>
                     <p className="sub-sec">
-                      <span>Applicant's Phone: </span>{" "}
+                      <span>Applicant&apos;s Phone: </span>{" "}
                       {element.jobSeekerInfo.phone}
                     </p>
                     <p className="sub-sec">
-                      <span>Applicant's Address: </span>{" "}
+                      <span>Applicant&apos;s Address: </span>{" "}
                       {element.jobSeekerInfo.address}
                     </p>
                     <p className="sub-sec">
-                      <span>Applicant's CoverLetter: </span>
+                      <span>Applicant&apos;s CoverLetter: </span>
                       <textarea
                         value={element.jobSeekerInfo.coverLetter}
                         rows={5}

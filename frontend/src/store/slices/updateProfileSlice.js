@@ -1,5 +1,9 @@
+/* eslint-disable */
+
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const updateProfileSlice = createSlice({
   name: "updateProfile",
@@ -47,8 +51,7 @@ export const updateProfile = (data) => async (dispatch) => {
   dispatch(updateProfileSlice.actions.updateProfileRequest());
   try {
     const response = await axios.put(
-      "https://jobquest-backend-oaci.onrender.com/api/v1/user/update/profile",
-      // "http://localhost:4000/api/v1/user/update/profile",
+      `${API_BASE_URL}/user/update/profile`,
       data,
       {
         withCredentials: true,
@@ -68,8 +71,7 @@ export const updatePassword = (data) => async (dispatch) => {
   dispatch(updateProfileSlice.actions.updatePasswordRequest());
   try {
     const response = await axios.put(
-      "https://jobquest-backend-oaci.onrender.com/api/v1/user/update/password",
-      // "http://localhost:4000/api/v1/user/update/password",
+      `${API_BASE_URL}/user/update/password`,
       data,
       {
         withCredentials: true,

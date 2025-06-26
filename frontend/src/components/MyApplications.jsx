@@ -6,7 +6,7 @@ import {
   clearAllApplicationErrors,
   resetApplicationSlice,
   deleteApplication,
-  fetchJobSeekerApplications,
+  fetchMyApplications,
 } from "../store/slices/applicationSlice";
 import Spinner from "../components/Spinner";
 
@@ -18,7 +18,7 @@ const MyApplications = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchJobSeekerApplications());
+    dispatch(fetchMyApplications());
   }, []);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const MyApplications = () => {
     if (message) {
       toast.success(message);
       dispatch(resetApplicationSlice());
-      dispatch(fetchJobSeekerApplications());
+      dispatch(fetchMyApplications());
     }
   }, [dispatch, error, message]);
 

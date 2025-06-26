@@ -1,5 +1,9 @@
+/* eslint-disable */
+
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const jobSlice = createSlice({
   name: "jobs",
@@ -108,8 +112,7 @@ export const fetchJobs =
   async (dispatch) => {
     try {
       dispatch(jobSlice.actions.requestForAllJobs());
-      let link = "https://jobquest-backend-oaci.onrender.com/api/v1/job/getall?";
-      // let link = "http://localhost:4000/api/v1/job/getall?";
+      let link = `${API_BASE_URL}/job/getall?`;
       let queryParams = [];
       if (searchKeyword) {
         queryParams.push(`searchKeyword=${searchKeyword}`);
@@ -158,8 +161,7 @@ export const fetchSingleJob = (jobId) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForSingleJob());
   try {
     const response = await axios.get(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/job/get/${jobId}`,
-      // `http://localhost:4000/api/v1/job/get/${jobId}`,
+      `${API_BASE_URL}/job/get/${jobId}`,
       { withCredentials: true }
     );
     dispatch(jobSlice.actions.successForSingleJob(response.data.job));
@@ -173,8 +175,7 @@ export const postJob = (data) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForPostJob());
   try {
     const response = await axios.post(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/job/post`,
-      // `http://localhost:4000/api/v1/job/post`,
+      `${API_BASE_URL}/job/post`,
       data,
       { withCredentials: true, headers: { "Content-Type": "application/json" } }
     );
@@ -189,8 +190,7 @@ export const getMyJobs = () => async (dispatch) => {
   dispatch(jobSlice.actions.requestForMyJobs());
   try {
     const response = await axios.get(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/job/getmyjobs`,
-      // `http://localhost:4000/api/v1/job/getmyjobs`,
+      `${API_BASE_URL}/job/getmyjobs`,
       { withCredentials: true }
     );
     dispatch(jobSlice.actions.successForMyJobs(response.data.myJobs));
@@ -204,8 +204,7 @@ export const deleteJob = (id) => async (dispatch) => {
   dispatch(jobSlice.actions.requestForDeleteJob());
   try {
     const response = await axios.delete(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/job/delete/${id}`,
-      // `http://localhost:4000/api/v1/job/delete/${id}`,
+      `${API_BASE_URL}/job/delete/${id}`,
       { withCredentials: true }
     );
     dispatch(jobSlice.actions.successForDeleteJob(response.data.message));

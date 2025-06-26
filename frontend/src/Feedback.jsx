@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Feedback = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -33,7 +33,7 @@ const Feedback = () => {
         setMessage('Failed to submit feedback. Please try again.');
       }
     } catch (error) {
-      setMessage('An error occurred. Please try again.');
+      setMessage('An error occurred. Please try again...' + error.message);
     }
   };
 

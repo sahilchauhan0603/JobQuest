@@ -1,5 +1,10 @@
+/* eslint-disable */
+
+
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const applicationSlice = createSlice({
   name: "applications",
@@ -80,15 +85,12 @@ const applicationSlice = createSlice({
   },
 });
 
-export const fetchEmployerApplications = () => async (dispatch) => {
+export const fetchApplications = () => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForAllApplications());
   try {
     const response = await axios.get(
-      // `http://localhost:4000/api/v1/application/employer/getall`,
-      `https://jobquest-backend-oaci.onrender.com/api/v1/application/employer/getall`,
-      {
-        withCredentials: true,
-      }
+      `${API_BASE_URL}/application/employer/getall`,
+      { withCredentials: true }
     );
     dispatch(
       applicationSlice.actions.successForAllApplications(
@@ -105,15 +107,12 @@ export const fetchEmployerApplications = () => async (dispatch) => {
   }
 };
 
-export const fetchJobSeekerApplications = () => async (dispatch) => {
+export const fetchMyApplications = () => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForMyApplications());
   try {
     const response = await axios.get(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/application/jobseeker/getall`,
-      // `http://localhost:4000/api/v1/application/jobseeker/getall`,
-      {
-        withCredentials: true,
-      }
+      `${API_BASE_URL}/application/jobseeker/getall`,
+      { withCredentials: true }
     );
     dispatch(
       applicationSlice.actions.successForMyApplications(
@@ -130,12 +129,11 @@ export const fetchJobSeekerApplications = () => async (dispatch) => {
   }
 };
 
-export const postApplication = (data, jobId) => async (dispatch) => {
+export const postApplication = (data,jobId) => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForPostApplication());
   try {
     const response = await axios.post(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/application/post/${jobId}`,
-      // `http://localhost:4000/api/v1/application/post/${jobId}`,
+      `${API_BASE_URL}/application/post/${jobId}`,
       data,
       {
         withCredentials: true,
@@ -159,14 +157,11 @@ export const deleteApplication = (id) => async (dispatch) => {
   dispatch(applicationSlice.actions.requestForDeleteApplication());
   try {
     const response = await axios.delete(
-      `https://jobquest-backend-oaci.onrender.com/api/v1/application/delete/${id}`,
-      // `http://localhost:4000/api/v1/application/delete/${id}`,
+      `${API_BASE_URL}/application/delete/${id}`,
       { withCredentials: true }
     );
     dispatch(
-      applicationSlice.actions.successForDeleteApplication(
-        response.data.message
-      )
+      applicationSlice.actions.successForDeleteApplication(response.data.message)
     );
     dispatch(clearAllApplicationErrors());
   } catch (error) {

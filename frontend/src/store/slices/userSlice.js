@@ -1,5 +1,9 @@
+/* eslint-disable */
+
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const userSlice = createSlice({
   name: "user",
@@ -92,8 +96,7 @@ export const register = (data) => async (dispatch) => {
   dispatch(userSlice.actions.registerRequest());
   try {
     const response = await axios.post(
-      "https://jobquest-backend-oaci.onrender.com/api/v1/user/register",
-      // "http://localhost:4000/api/v1/user/register",
+      `${API_BASE_URL}/user/register`,
       data,
       {
         withCredentials: true,
@@ -111,8 +114,7 @@ export const login = (data) => async (dispatch) => {
   dispatch(userSlice.actions.loginRequest());
   try {
     const response = await axios.post(
-      "https://jobquest-backend-oaci.onrender.com/api/v1/user/login",
-      // "http://localhost:4000/api/v1/user/login",
+      `${API_BASE_URL}/user/login`,
       data,
       {
         withCredentials: true,
@@ -130,8 +132,7 @@ export const getUser = () => async (dispatch) => {
   dispatch(userSlice.actions.fetchUserRequest());
   try {
     const response = await axios.get(
-      "https://jobquest-backend-oaci.onrender.com/api/v1/user/getuser",
-      // "http://localhost:4000/api/v1/user/getuser",
+      `${API_BASE_URL}/user/getuser`,
       {
         withCredentials: true,
       }
@@ -145,8 +146,7 @@ export const getUser = () => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   try {
     await axios.get(
-      "https://jobquest-backend-oaci.onrender.com/api/v1/user/logout",
-      // "http://localhost:4000/api/v1/user/logout",
+      `${API_BASE_URL}/user/logout`,
       {
         withCredentials: true,
       }
