@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { clearAllJobErrors, fetchJobs } from "../store/slices/jobSlice";
 import Spinner from "../components/Spinner";
-import { FaSearch, FaMapMarkerAlt, FaBuilding, FaMoneyBillWave, FaCalendarAlt, FaFilter, FaChevronDown } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt, FaBuilding, FaMoneyBillWave, FaCalendarAlt, FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./Jobs.css";
 
@@ -18,24 +18,10 @@ const Jobs = () => {
   const [niche, setNiche] = useState("");
   const [selectedNiche, setSelectedNiche] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [showFilter, setShowFilter] = useState(false);
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
 
   const { jobs, loading, error } = useSelector((state) => state.jobs);
-
-  const handleCityChange = (city) => {
-    setCity(city);
-    setSelectedCity(city);
-  };
-  const handleNicheChange = (niche) => {
-    setNiche(niche);
-    setSelectedNiche(niche);
-  };
-
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchJobs(city, niche, searchKeyword));
-  }, [dispatch, city, niche, searchKeyword]);
 
   useEffect(() => {
     if (error) {
@@ -44,8 +30,16 @@ const Jobs = () => {
     }
   }, [error, dispatch]);
 
+  // Debounced search: fetch jobs after user stops typing for 400ms
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      dispatch(fetchJobs(selectedCity, selectedNiche, searchKeyword));
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [dispatch, selectedCity, selectedNiche, searchKeyword]);
+
   const handleSearch = () => {
-    dispatch(fetchJobs(city, niche, searchKeyword));
+    dispatch(fetchJobs(selectedCity, selectedNiche, searchKeyword));
   };
 
   const cities = [
@@ -71,7 +65,6 @@ const Jobs = () => {
     "Varanasi",
   ];
 
-
   const nichesArray = [
     "All",
     "Software Development",
@@ -96,6 +89,9 @@ const Jobs = () => {
     "IT Consulting",
   ];
 
+  // Responsive: show sidebar filter on desktop, dropdown on mobile
+  // Use CSS media queries to hide/show as needed
+
   return (
     <>
       <div className="jobs-hero yellow-hero">
@@ -116,20 +112,27 @@ const Jobs = () => {
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="Search by job title, company, or keyword..."
               className="search-input"
+              aria-label="Search jobs"
             />
-            <button onClick={handleSearch} className="search-btn yellow-btn">
+            <button onClick={handleSearch} className="search-btn yellow-btn" aria-label="Find Job">
               <FaSearch /> Find Job
             </button>
-            {/* <button className="dropdown-btn yellow-btn" onClick={() => setShowFilter((prev) => !prev)}>
-              <FaFilter /> j <FaChevronDown style={{marginLeft: 4}}/>
-            </button> */}
+            <button
+              className="dropdown-btn yellow-btn mobile-only"
+              style={{ display: 'none' }}
+              onClick={() => setShowMobileFilter((prev) => !prev)}
+              aria-label="Show Filters"
+            >
+              <FaFilter /> Filters
+            </button>
           </div>
           <div className="wrapper">
-            <aside className={`filter-bar enhanced-filter dropdown-filter${showFilter ? " show" : ""}`}>
+            {/* Sidebar filter for desktop */}
+            <aside className="filter-bar enhanced-filter desktop-only">
               <h2><FaFilter /> Filter Jobs</h2>
               <div className="filter-group">
                 <h3>By City</h3>
-                <select className="filter-dropdown" value={selectedCity} onChange={e => handleCityChange(e.target.value)}>
+                <select className="filter-dropdown" value={selectedCity} onChange={e => setSelectedCity(e.target.value)}>
                   <option value="">All Cities</option>
                   {cities.map((city, index) => (
                     <option value={city} key={index}>{city}</option>
@@ -138,7 +141,32 @@ const Jobs = () => {
               </div>
               <div className="filter-group">
                 <h3>By Niche</h3>
-                <select className="filter-dropdown" value={selectedNiche} onChange={e => handleNicheChange(e.target.value)}>
+                <select className="filter-dropdown" value={selectedNiche} onChange={e => setSelectedNiche(e.target.value)}>
+                  <option value="">All Niches</option>
+                  {nichesArray.map((niche, index) => (
+                    <option value={niche} key={index}>{niche}</option>
+                  ))}
+                </select>
+              </div>
+            </aside>
+            {/* Mobile filter dropdown, only visible on mobile */}
+            <aside
+              className="filter-bar enhanced-filter mobile-filter mobile-only"
+              style={{ display: showMobileFilter ? 'block' : 'none', position: 'absolute', zIndex: 20, left: 0, right: 0, margin: '0 auto', top: '7rem', maxWidth: 340 }}
+            >
+              <h2><FaFilter /> Filter Jobs</h2>
+              <div className="filter-group">
+                <h3>By City</h3>
+                <select className="filter-dropdown" value={selectedCity} onChange={e => setSelectedCity(e.target.value)}>
+                  <option value="">All Cities</option>
+                  {cities.map((city, index) => (
+                    <option value={city} key={index}>{city}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <h3>By Niche</h3>
+                <select className="filter-dropdown" value={selectedNiche} onChange={e => setSelectedNiche(e.target.value)}>
                   <option value="">All Niches</option>
                   {nichesArray.map((niche, index) => (
                     <option value={niche} key={index}>{niche}</option>
@@ -147,27 +175,6 @@ const Jobs = () => {
               </div>
             </aside>
             <main className="container jobs-main">
-              <div className="mobile-filter">
-                <select value={city} onChange={(e) => setCity(e.target.value)}>
-                  <option value="">Filter By City</option>
-                  {cities.map((city, index) => (
-                    <option value={city} key={index}>
-                      {city}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={niche}
-                  onChange={(e) => setNiche(e.target.value)}
-                >
-                  <option value="">Filter By Niche</option>
-                  {nichesArray.map((niche, index) => (
-                    <option value={niche} key={index}>
-                      {niche}
-                    </option>
-                  ))}
-                </select>
-              </div>
               <div className="jobs_container jobs-grid">
                 {jobs && jobs.length > 0 ? (
                   jobs.map((element) => {
@@ -202,7 +209,10 @@ const Jobs = () => {
                     );
                   })
                 ) : (
-                  <img src="./notfound.png" alt="job-not-found" className="notfound-img" />
+                  <div style={{textAlign: 'center', marginTop: '2rem'}}>
+                    <div style={{fontSize: '1.5rem', fontWeight: 600, color: '#ff9800', marginBottom: '1rem'}}>No jobs found</div>
+                    <img src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?auto=format&fit=crop&w=600&q=80" alt="No jobs found" className="notfound-img" />
+                  </div>
                 )}
               </div>
             </main>
