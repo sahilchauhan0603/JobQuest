@@ -39,3 +39,14 @@ export const newsLetterCron = () => {
     }
   });
 };
+
+/*
+Explanation:
+- This file uses node-cron library to schedule a task that runs every minute.
+- It finds all jobs in the database where newsletters have not been sent (newsLettersSent: false).
+- For each job, it finds users whose niche matches the job's niche (first, second, or third niche).
+- For each matching user, it sends an email with job details using the sendEmail utility.
+- After sending emails for a job, it marks newsLettersSent as true to avoid duplicate notifications.
+- If any error occurs, it is logged in the catch block.
+- This automation ensures users are notified in real time about new job postings that match their interests, without manual intervention.
+*/

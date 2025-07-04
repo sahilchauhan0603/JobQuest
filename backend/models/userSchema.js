@@ -53,21 +53,27 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Pre-save middleware to hash password before saving user document
 userSchema.pre("save", async function (next) {
+  // Only hash password if it has been modified or is new
   if (!this.isModified("password")) {
-    next();
+    next(); // Skip hashing if password is unchanged
   }
+  // Hash the password with bcrypt (salt rounds = 10)
   this.password = await bcrypt.hash(this.password, 10);
 });
 
+// Instance method to compare entered password with hashed password
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
+// Instance method to generate JWT token for the user
 userSchema.methods.getJWTToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRE,
+    expiresIn: process.env.JWT_EXPIRE, // Token expiry from env
   });
 };
 
+// Export the User model
 export const User = mongoose.model("User", userSchema);

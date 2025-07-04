@@ -41,7 +41,7 @@ app.post("/submitFeedback", async (req, res) => {
     // Send the feedback email to the owner's email
     await sendEmail({
       email: process.env.SMTP_MAIL, // Owner's email from environment variables
-      subject: "New Feedback Received From Job Quest Website",
+      subject: "New Feedback Received From JobQuest Website",
       message: `
         Name: ${name}\n
         Email: ${email}\n

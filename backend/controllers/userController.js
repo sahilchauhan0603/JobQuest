@@ -4,8 +4,10 @@ import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 import { sendToken } from "../utils/jwtToken.js";
 
+// Controller to register a new user
 export const register = catchAsyncErrors(async (req, res, next) => {
   try {
+    // Extract user details from request body
     const {
       name,
       email,
@@ -19,18 +21,22 @@ export const register = catchAsyncErrors(async (req, res, next) => {
       coverLetter,
     } = req.body;
 
+    // Validate required fields
     if (!name || !email || !phone || !address || !password || !role) {
       return next(new ErrorHandler("All fileds are required.", 400));
     }
+    // For job seekers, all three niches are required
     if (role === "Job Seeker" && (!firstNiche || !secondNiche || !thirdNiche)) {
       return next(
         new ErrorHandler("Please provide your preferred job niches.", 400)
       );
     }
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return next(new ErrorHandler("Email is already registered.", 400));
     }
+    // Build user data object
     const userData = {
       name,
       email,
@@ -45,10 +51,12 @@ export const register = catchAsyncErrors(async (req, res, next) => {
       },
       coverLetter,
     };
+    // Handle resume upload if provided
     if (req.files && req.files.resume) {
       const { resume } = req.files;
       if (resume) {
         try {
+          // Upload resume to Cloudinary
           const cloudinaryResponse = await cloudinary.uploader.upload(
             resume.tempFilePath,
             { folder: "Job_Seekers_Resume" }
@@ -67,6 +75,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
         }
       }
     }
+    // Create user and send JWT token
     const user = await User.create(userData);
     sendToken(user, 201, res, "User Registered.");
   } catch (error) {
@@ -74,27 +83,34 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
+// Controller to login a user
 export const login = catchAsyncErrors(async (req, res, next) => {
   const { role, email, password } = req.body;
+  // Validate required fields
   if (!role || !email || !password) {
     return next(
       new ErrorHandler("Email, password and role are required.", 400)
     );
   }
+  // Find user by email and include password
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return next(new ErrorHandler("Invalid email or password.", 400));
   }
+  // Compare entered password with hashed password
   const isPasswordMatched = await user.comparePassword(password);
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password.", 400));
   }
+  // Check if user role matches
   if (user.role !== role) {
     return next(new ErrorHandler("Invalid user role.", 400));
   }
+  // Send JWT token
   sendToken(user, 200, res, "User logged in successfully.");
 });
 
+// Controller to logout a user (clears the token cookie)
 export const logout = catchAsyncErrors(async (req, res, next) => {
   res
     .status(200)
@@ -109,6 +125,7 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
+// Controller to get the current user's info
 export const getUser = catchAsyncErrors(async (req, res, next) => {
   const user = req.user;
   res.status(200).json({
@@ -117,7 +134,9 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Controller to update user profile
 export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+  // Build new user data from request
   const newUserData = {
     name: req.body.name,
     email: req.body.email,
@@ -132,6 +151,7 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
   };
   const { firstNiche, secondNiche, thirdNiche } = newUserData.niches;
 
+  // For job seekers, all three niches are required
   if (
     req.user.role === "Job Seeker" &&
     (!firstNiche || !secondNiche || !thirdNiche)
@@ -140,6 +160,7 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Please provide your all preferred job niches.", 400)
     );
   }
+  // Handle resume update if provided
   if (req.files) {
     const resume = req.files.resume;
     if (resume) {
@@ -157,6 +178,7 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     }
   }
 
+  // Update user in database
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
     runValidators: true,
@@ -169,26 +191,32 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Controller to update user password
 export const updatePassword = catchAsyncErrors(async (req, res, next) => {
+  // Find user and include password
   const user = await User.findById(req.user.id).select("+password");
 
+  // Compare old password
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Old password is incorrect.", 400));
   }
 
+  // Check if new password and confirm password match
   if (req.body.newPassword !== req.body.confirmPassword) {
     return next(
       new ErrorHandler("New password & confirm password do not match.", 400)
     );
   }
 
+  // Update password and save
   user.password = req.body.newPassword;
   await user.save();
   sendToken(user, 200, res, "Password updated successfully.");
 });
 
+// Controller to get total user count
 export const getUserCount = catchAsyncErrors(async (req, res, next) => {
   const count = await User.countDocuments();
   res.status(200).json({ count });

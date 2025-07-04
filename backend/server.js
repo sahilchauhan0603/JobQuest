@@ -39,3 +39,21 @@ io.on("connection", (socket) => {
 server.listen(process.env.PORT, () => {
   console.log(`Server listening at port ${process.env.PORT}`);
 });
+
+/*
+Explanation:
+- Loads environment variables using dotenv for configuration.
+- Configures Cloudinary with credentials from environment variables for image/file uploads.
+- Creates an HTTP server from the Express app.
+- Sets up a Socket.IO server for real-time communication, allowing CORS from the frontend URL.
+- Listens for new socket connections:
+  - Logs when a user connects or disconnects.
+  - Listens for 'send_message' events from clients, logs the message, and broadcasts it to all connected clients using 'receive_message'.
+- Starts the server on the specified port and logs the status.
+- This setup enables real-time features (like chat) and cloud-based file management in the application.
+
+What is Cloudinary?
+- Cloudinary is a cloud-based service for managing images and other media files.
+- It provides APIs to upload, store, transform, and deliver images and videos efficiently.
+- In this project, Cloudinary is used to upload and store user resumes and other files, offloading file storage from your server and making file management scalable and reliable.
+*/
